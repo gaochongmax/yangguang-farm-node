@@ -1,11 +1,13 @@
-const userRouter = require('./user')
-const filesRouter = require('./files')
 const farmRouter = require('./farm')
+const filesRouter = require('./files')
+const siteRouter = require('./site')
+const userRouter = require('./user')
 
 module.exports = {
   init: app => {
-    app.use('/user', userRouter)
-    app.use('/files', filesRouter)
     app.use('/farm', farmRouter)
+    app.use('/files', filesRouter)
+    app.use('/site', siteRouter)
+    app.use('/user', userRouter)
   }
 }

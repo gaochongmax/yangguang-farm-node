@@ -6,6 +6,10 @@
 # production
 /build
 
+# uploads
+/public/files
+/temp
+
 # misc
 .env.production
 

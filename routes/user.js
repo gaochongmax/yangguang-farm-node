@@ -1,17 +1,18 @@
 const { Router } = require('express')
 const router = Router()
+const { Types } = require('mongoose')
 const User = require('../models/user')
 const Secret = require('../models/secret')
 const {
   resNormal,
   resAnormal,
   decrypt,
-} = require('../utils/index')
-const { RES_EXCEPTION } = require('../config/constant')
+} = require('../utils')
+const { RES_EXCEPTION, ROLES } = require('../config/constant')
 const checkLogin = require('../middleware/check-login')
 
 // 注册
-router.post('/register', async function(req, res, next) {
+router.post('/register', async (req, res, next) => {
   try {
     const { mobile, password } = req.body
     const data = await User.findOne({ mobile })
@@ -53,9 +54,43 @@ router.post('/login', async (req, res, next) => {
   }
 })
 
+// 退出登录
+router.post('/logout', (req, res) => {
+  const id = req.session && req.session.userId
+  if (id) {
+    req.session.userId = undefined
+  }
+  resNormal(res, null)
+})
+
 // 获取个人信息
-router.post('/profile', checkLogin(true), function(user, req, res, next) {
-  resNormal(res, user)
+router.post('/profile', checkLogin(true), (req, res) => {
+  resNormal(res, req.user)
+})
+
+// 保存个人信息
+router.post('/save', checkLogin(true), async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(Types.ObjectId(req.session.userId), req.body)
+    resNormal(res, null)
+  } catch (e) {
+    resAnormal(res)
+  }
+})
+
+// 切换身份
+router.post('/switch-role', checkLogin(true), async (req, res) => {
+  try {
+    const { role } = req.user
+    if (role === ROLES.none) {
+      return resNormal(res, null)
+    }
+    const modify = { role: role === ROLES.farmer ? ROLES.seller : ROLES.farmer }
+    await User.findByIdAndUpdate(Types.ObjectId(req.session.userId), modify)
+    resNormal(res, null)
+  } catch (e) {
+    resAnormal(res)
+  }
 })
 
 module.exports = router

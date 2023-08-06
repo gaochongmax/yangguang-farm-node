@@ -1,5 +1,5 @@
 const { Types } = require('mongoose')
-const { resAnormal } = require('../utils/index')
+const { resAnormal } = require('../utils')
 const { RES_EXCEPTION } = require('../config/constant')
 const User = require('../models/user')
 
@@ -18,8 +18,9 @@ const checkLogin = intercept => async (req, res, next) => {
       console.log(e)
     }
   }
+  req.user = user
   if (!intercept) {
-    return next(user)
+    return next()
   }
   if (!id) {
     resAnormal(res, RES_EXCEPTION.not_login)
@@ -27,7 +28,7 @@ const checkLogin = intercept => async (req, res, next) => {
     req.session.userId = undefined
     resAnormal(res, RES_EXCEPTION.user_inexist)
   } else {
-    next(user)
+    next()
   }
 }
 

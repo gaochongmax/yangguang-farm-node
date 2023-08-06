@@ -51,11 +51,20 @@ exports.RES_EXCEPTION = {
 
 exports.UPLOAD_CONFIG = {
   img: {
-    file_size: 1024 * 1024 * 10,
-    mime_types: ['image/jpeg', 'image/png', 'image/bmp', 'image/gif']
+    max_size: 1024 * 1024 * 10,
+    accepts: ['image/jpeg', 'image/png', 'image/bmp', 'image/gif']
   },
   video: {
-    file_size: 1024 * 1024 * 100,
-    mime_types: ['video/mp4', 'video/mpeg', 'video/x-msvideo', 'video/webm', 'video/3gpp', 'video/x-m4v', 'video/quicktime']
+    max_size: 1024 * 1024 * 100,
+    accepts: ['video/mp4', 'video/mpeg', 'video/x-msvideo', 'video/webm', 'video/3gpp', 'video/x-m4v', 'video/quicktime']
   },
+}
+
+exports.TEMP_DIR = 'temp'
+exports.FILES_DIR = 'public/files'
+
+exports.ROLES = {
+  none: 0,
+  farmer: 1,
+  seller: 2
 }
